@@ -10,4 +10,4 @@ https://number-5.herokuapp.com
 
 # End Points:
 
-For now the only endpoint of number-5 is /where-should-we-eat. Is a endpoint that tells us where we should eat each day of the month.
+For now the only endpoint of number-5 is [/where-should-we-eat](https://number-5.herokuapp.com/where-should-we-eat?). Is a endpoint that tells us where we should eat each day of the month.
