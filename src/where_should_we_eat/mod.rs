@@ -14,11 +14,16 @@ pub struct PlaceToEat {
 pub fn get_place_to_eat() -> Json<PlaceToEat> {
     let premium_places = vec![
         "Madero",
+        "Marbo",
+        "Mustang Sally",
         "Madalosso",
+        "Recanto Gaúcho",
         "Cabana Motenfusco",
     ];
     let normal_places = vec![
         "Jokers",
+        "Veneza",
+        "Everest",
         "São Francisco",
         "Nona",
         "Origami",
@@ -28,7 +33,7 @@ pub fn get_place_to_eat() -> Json<PlaceToEat> {
         "Villa Urbana",
         "Shawarma",
         "Bife-sujo",
-        "Costela do Japa",
+        "Japa da Costela",
         "No Canto",
         "Em casa",
         "Árabe",
