@@ -17,7 +17,7 @@ pub struct Error {
     error: String,
 }
 
-#[get("/is_it_raining")]
+#[get("/is-it-raining")]
 pub fn is_it_raining() -> Result<Json<IsItRaining>, Error> {
     let url_request = create_request();
     match execute_request(url_request) {
@@ -29,7 +29,7 @@ pub fn is_it_raining() -> Result<Json<IsItRaining>, Error> {
 fn create_request() -> String {
     let appkey = match env::var("APPKEY") {
         Ok(key) => key,
-        Err(_) => "042b9d1380077ff85a168b9869071e30".to_string(),
+        Err(_) => "put_key_here".to_string(),
     };
     let endpoint = format!("{}?id={}&appid={}", OPEN_WEATHER_ENDPOINT, CURITIBA_ID, appkey);
     endpoint.to_string()
