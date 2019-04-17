@@ -53,10 +53,10 @@ fn get_from_random_list(places: &[&str]) -> String {
 }
 
 fn get_rnd() -> StdRng {
-    let start = SystemTime::now();
     let seconds_in_a_day = 60 * 60 * 24;
-    match start.duration_since(UNIX_EPOCH) {
-        Ok(s) => StdRng::seed_from_u64((s.as_secs() / seconds_in_a_day) * seconds_in_a_day),
-        Err(_) => panic!("Something very wrong happend!")
-    }
+
+    let start = SystemTime::now();
+    let s = start.duration_since(UNIX_EPOCH).expect("Something very wrong happend!");
+
+    StdRng::seed_from_u64((s.as_secs() / seconds_in_a_day) * seconds_in_a_day)
 }
