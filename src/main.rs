@@ -1,9 +1,11 @@
 #![feature(proc_macro_hygiene, decl_macro, custom_attribute)]
 #[macro_use] extern crate rocket;
+extern crate reqwest;
 use rocket::Config;
 use std::env;
 
 mod phrases;
+mod weather;
 mod where_should_we_eat;
 
 #[get("/")]
@@ -23,6 +25,7 @@ fn configure() -> Config {
 fn main() {
     rocket::custom(configure())
         .mount("/", routes![where_should_we_eat::get_place_to_eat])
+        .mount("/", routes![weather::is_it_raining])
         .register(catchers![phrases::get_phrase])
         .launch();
 }
