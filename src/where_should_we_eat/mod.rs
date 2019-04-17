@@ -19,6 +19,7 @@ pub fn get_place_to_eat() -> Json<PlaceToEat> {
         "Madalosso",
         "Recanto Gaúcho",
         "Cabana Motenfusco",
+        "Bife-sujo",
     ];
     let normal_places = vec![
         "Jokers",
@@ -32,7 +33,6 @@ pub fn get_place_to_eat() -> Json<PlaceToEat> {
         "Ponto Setti",
         "Villa Urbana",
         "Shawarma",
-        "Bife-sujo",
         "Japa da Costela",
         "No Canto",
         "Em casa",
