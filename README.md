@@ -10,6 +10,8 @@ https://number-5.herokuapp.com
 
 # End Points:
 
-For now the only endpoint of number-5 is [/where-should-we-eat](https://number-5.herokuapp.com/where-should-we-eat?). Is an endpoint that tells us where we should eat each day of the month.
+The main endpoint of number-5 is [/where-should-we-eat](https://number-5.herokuapp.com/where-should-we-eat?). Is an endpoint that tells us where we should eat each day of the month.
+
+Another useful endpoint is [/is-it-raining](https://number-5.herokuapp.com/is-it-raining?). This one tells us if it is raining or not. Don't abuse please, it is not cached yet.
 
 Also, if you type a wrong endpoint you will be blessed with a random phrase from Number 5
