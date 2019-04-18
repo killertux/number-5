@@ -46,17 +46,12 @@ pub fn get_place_to_eat() -> Json<PlaceToEat> {
 }
 
 fn get_from_random_list(places: &[&str]) -> String {
-    match places.choose(&mut &mut get_rnd()) {
-        Some(x) => x.to_string(),
-        None => "Ops!".to_string(),
-    }
+    places.choose(&mut get_rnd()).unwrap_or(&"Rand error!").to_string()
 }
 
 fn get_rnd() -> StdRng {
     let seconds_in_a_day = 60 * 60 * 24;
-
     let start = SystemTime::now();
     let s = start.duration_since(UNIX_EPOCH).expect("Something very wrong happend!");
-
     StdRng::seed_from_u64((s.as_secs() / seconds_in_a_day) * seconds_in_a_day)
 }
