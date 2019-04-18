@@ -50,10 +50,7 @@ fn code_to_raining_state(open_weather_response: OpenWeatherResponse) -> Json<IsI
 
 fn get_timestamp() -> u32 {
     let start = SystemTime::now();
-    match start.duration_since(UNIX_EPOCH) {
-        Ok(s) => s.as_secs() as u32,
-        Err(_) => panic!("Something very wrong happend!")
-    }
+    start.duration_since(UNIX_EPOCH).expect("Something very wrong happened!").as_secs() as u32
 }
 
 #[derive(Deserialize, Debug)]
