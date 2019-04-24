@@ -42,9 +42,12 @@ fn execute_request(url_request: String) -> Result<OpenWeatherResponse, Box<std::
 
 /* https://openweathermap.org/weather-conditions */
 fn code_to_raining_state(open_weather_response: OpenWeatherResponse) -> WeatherResponse {
-    match open_weather_response.weather[0].id {
-        230 ... 531 => WeatherResponse::IsItRaining {response: true, timestamp: get_timestamp()},
-        _ => WeatherResponse::IsItRaining {response: false, timestamp: get_timestamp()},
+    WeatherResponse::IsItRaining {
+        timestamp: get_timestamp(),
+        response: match open_weather_response.weather[0].id {
+            230 ... 531 => true,
+            _ => false,
+        }
     }
 }
 
