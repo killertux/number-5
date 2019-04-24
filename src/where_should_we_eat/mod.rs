@@ -42,16 +42,26 @@ pub fn get_place_to_eat() -> Json<PlaceToEat> {
     ];
     let places = [(premium_places, 1), (normal_places, 19)];
     let distribution = WeightedIndex::new(places.iter().map(|place| place.1)).unwrap();
-    Json(PlaceToEat{place_to_eat: get_from_random_list(&places[distribution.sample(&mut get_rnd())].0)})
+
+    let chosen_list = &places[distribution.sample(&mut get_rnd())].0;
+
+    Json(PlaceToEat{
+        place_to_eat: get_from_random_list(chosen_list)
+    })
 }
 
 fn get_from_random_list(places: &[&str]) -> String {
-    places.choose(&mut get_rnd()).unwrap_or(&"Rand error!").to_string()
+    places.choose(&mut get_rnd())
+            .unwrap_or(&"Rand error!")
+            .to_string()
 }
 
 fn get_rnd() -> StdRng {
     let seconds_in_a_day = 60 * 60 * 24;
-    let start = SystemTime::now();
-    let s = start.duration_since(UNIX_EPOCH).expect("Something very wrong happend!");
-    StdRng::seed_from_u64((s.as_secs() / seconds_in_a_day) * seconds_in_a_day)
+
+    let timestamp = SystemTime::now()
+                        .duration_since(UNIX_EPOCH)
+                        .expect("Something very wrong happend!");
+
+    StdRng::seed_from_u64((timestamp.as_secs() / seconds_in_a_day) * seconds_in_a_day)
 }

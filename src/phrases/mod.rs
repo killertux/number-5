@@ -95,5 +95,8 @@ fn get_random_phrase() -> String {
         "Communicate. Need input. I have questions, queries, *posers*.",
         "Well, above average.",
     ];
-    phrases.choose(&mut rand::thread_rng()).unwrap_or(&"Error in rand!").to_string()
+
+    phrases.choose(&mut rand::thread_rng())
+        .unwrap_or(&"Ops!")
+        .to_string()
 }

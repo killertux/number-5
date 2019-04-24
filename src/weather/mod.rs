@@ -7,32 +7,32 @@ const OPEN_WEATHER_ENDPOINT: &str  = "https://api.openweathermap.org/data/2.5/we
 const CURITIBA_ID: u32 = 6322752;
 
 #[derive(Serialize, Debug)]
-pub struct IsItRaining {
-    pub response: bool,
-    pub timestamp: u32,
-}
-
-#[derive(Serialize, Debug)]
-pub struct Error {
-    error: String,
+pub enum WeatherResponse {
+    IsItRaining {
+        response: bool,
+        timestamp: u32,
+    },
+    Error {
+        message: &'static str
+    },
 }
 
 #[get("/is-it-raining")]
-pub fn is_it_raining() -> Result<Json<IsItRaining>, Error> {
+pub fn is_it_raining() -> Json<WeatherResponse> {
     let url_request = create_request();
-    match execute_request(url_request) {
-        Ok(open_weather_response) => Ok(code_to_raining_state(open_weather_response)),
-        Err(_) => Err(Error{error:"Open Weather is out of service!".to_string()}),
-    }
+
+    let response = execute_request(url_request)
+                    .map(code_to_raining_state)
+                    .unwrap_or(WeatherResponse::Error{message:"Open Weather is out of service!"});
+
+    Json(response)
 }
 
 fn create_request() -> String {
-    let appkey = match env::var("APPKEY") {
-        Ok(key) => key,
-        Err(_) => "put_key_here".to_string(),
-    };
-    let endpoint = format!("{}?id={}&appid={}", OPEN_WEATHER_ENDPOINT, CURITIBA_ID, appkey);
-    endpoint.to_string()
+    let appkey = env::var("APPKEY")
+                    .unwrap_or("put_key_here".to_string());
+
+    format!("{}?id={}&appid={}", OPEN_WEATHER_ENDPOINT, CURITIBA_ID, appkey)
 }
 
 fn execute_request(url_request: String) -> Result<OpenWeatherResponse, Box<std::error::Error>> {
@@ -41,17 +41,22 @@ fn execute_request(url_request: String) -> Result<OpenWeatherResponse, Box<std::
 }
 
 /* https://openweathermap.org/weather-conditions */
-fn code_to_raining_state(open_weather_response: OpenWeatherResponse) -> Json<IsItRaining> {
-    match open_weather_response.weather[0].id {
-        230 ... 531 => Json(IsItRaining {response: true, timestamp: get_timestamp()}),
-        _ => Json(IsItRaining {response: false, timestamp: get_timestamp()}),
+fn code_to_raining_state(open_weather_response: OpenWeatherResponse) -> WeatherResponse {
+    WeatherResponse::IsItRaining {
+        timestamp: get_timestamp(),
+        response: match open_weather_response.weather[0].id {
+            230 ... 531 => true,
+            _ => false,
+        }
     }
 }
 
 fn get_timestamp() -> u32 {
-    let start = SystemTime::now();
-    start.duration_since(UNIX_EPOCH).expect("Something very wrong happened!").as_secs() as u32
+    SystemTime::now().duration_since(UNIX_EPOCH)
+        .expect("Something very wrong happend!")
+        .as_secs() as u32
 }
+
 
 #[derive(Deserialize, Debug)]
 struct OpenWeatherResponse {
