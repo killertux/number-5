@@ -66,8 +66,8 @@ fn get_rnd() -> StdRng {
 }
 
 fn get_days_since_my_birth() -> u32 {
-    let babbage = Utc.ymd(1986, 5, 9);
+    let birthday = Utc.ymd(1986, 5, 9);
     let now =  Utc::now().date();
-    now.signed_duration_since(babbage)
+    now.signed_duration_since(birthday)
         .num_days() as u32
 }
