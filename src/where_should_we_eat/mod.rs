@@ -59,15 +59,15 @@ fn get_from_random_list(places: &[&str]) -> String {
 fn get_rnd() -> StdRng {
     let super_seed = 42;
     let mut rnd = StdRng::seed_from_u64(super_seed);
-    for _i in 0..get_days_since_babbage_birthday() {
+    for _i in 0..get_days_since_my_birth() {
         rnd.next_u32();
     }
     rnd
 }
 
-fn get_days_since_babbage_birthday() -> u32 {
-    let babbage = Utc.ymd(1791, 12, 26);
+fn get_days_since_my_birth() -> u32 {
+    let birthday = Utc.ymd(1986, 5, 9);
     let now =  Utc::now().date();
-    now.signed_duration_since(babbage)
+    now.signed_duration_since(birthday)
         .num_days() as u32
 }
