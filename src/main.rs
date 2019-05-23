@@ -24,7 +24,11 @@ fn configure() -> Config {
 
 fn main() {
     rocket::custom(configure())
-        .mount("/", routes![where_should_we_eat::get_place_to_eat])
+        .mount("/", routes![
+            where_should_we_eat::get_place_to_eat,
+            where_should_we_eat::get_place_to_eat_with_offset,
+            where_should_we_eat::get_place_to_eat_in_the_next_days,
+            ])
         .mount("/", routes![weather::is_it_raining])
         .register(catchers![phrases::get_phrase])
         .launch();
