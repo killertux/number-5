@@ -70,26 +70,30 @@ fn choose_place_to_eat(offset: u32) -> PlaceToEat {
     ];
     let places = [(premium_places, 1), (normal_places, 19)];
     let distribution = WeightedIndex::new(places.iter().map(|place| place.1)).unwrap();
-    let chosen_list = &places[distribution.sample(&mut get_rnd(&offset))].0;
+    let chosen_list = places[distribution.sample(&mut get_rnd(&offset, 1).0)].0.clone();
 
     PlaceToEat{
         place_to_eat: get_from_random_list(chosen_list, &offset)
     }
 }
 
-fn get_from_random_list(places: &[&str], offset: &u32) -> String {
-    places.choose(&mut get_rnd(& offset))
-            .unwrap_or(&"Rand error!")
-            .to_string()
+fn get_from_random_list(mut places: Vec<&str>, offset: &u32) -> String {
+    let (mut rnd, group_index) = get_rnd(& offset, places.len() as u32);
+    places.shuffle(&mut rnd);
+    places[group_index as usize].to_string()
 }
 
-fn get_rnd(offset: &u32) -> StdRng {
+fn get_rnd(offset: &u32, group_size: u32) -> (StdRng, u32) {
     let super_seed = 42;
     let mut rnd = StdRng::seed_from_u64(super_seed);
-    for _i in 0..(get_days_since_my_birth() + offset) {
+    let days_since_birth = get_days_since_my_birth() + offset;
+    let group_index = days_since_birth % group_size;
+    let start_of_group = days_since_birth - group_index;
+
+    for _i in 0..start_of_group {
         rnd.next_u32();
     }
-    rnd
+    (rnd, group_index)
 }
 
 fn get_days_since_my_birth() -> u32 {
