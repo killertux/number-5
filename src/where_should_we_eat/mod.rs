@@ -29,13 +29,13 @@ pub fn get_place_to_eat_with_offset(offset: u32) -> Json<PlaceToEat> {
 
 #[get("/where-should-we-eat-in-the-next-days/<days>")]
 pub fn get_place_to_eat_in_the_next_days(days: u32) -> Json<Vec<PlaceToEatDay>> {
-    let mut next_days: Vec<PlaceToEatDay> = Vec::<PlaceToEatDay>::new();
-    for day in 0..days {
-        next_days.push(PlaceToEatDay{
-            days_from_today: day,
-            place_to_eat: choose_place_to_eat(day),
-        })
-    }
+    let next_days: Vec<PlaceToEatDay> = (0..days).into_iter()
+                                            .map(|day| PlaceToEatDay{
+                                                days_from_today: day,
+                                                place_to_eat: choose_place_to_eat(day),
+                                            })
+                                            .collect();
+
     Json(next_days)
 }
 
