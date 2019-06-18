@@ -66,7 +66,8 @@ fn choose_place_to_eat(offset: u32) -> PlaceToEat {
         "Em casa",
         "Árabe",
         "Quintal do Monge",
-        "Don Juan",
+        "San Juan",
+        "Hong Kong",
     ];
     let places = [(premium_places, 1), (normal_places, 19)];
     let distribution = WeightedIndex::new(places.iter().map(|place| place.1)).unwrap();
