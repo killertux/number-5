@@ -57,7 +57,6 @@ fn choose_place_to_eat(offset: u32) -> PlaceToEat {
         "Nona",
         "Origami",
         "Deodoro Grill",
-        "Express",
         "Ponto Setti",
         "Villa Urbana",
         "Shawarma",
