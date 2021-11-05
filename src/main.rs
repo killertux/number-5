@@ -29,7 +29,7 @@ async fn main() {
         .or(phrases)
         .with(warp::log("number-5"));
 
-    warp::serve(routes).run(([127, 0, 0, 1], get_port())).await;
+    warp::serve(routes).run(([0, 0, 0, 0], get_port())).await;
 }
 
 fn get_port() -> u16 {
