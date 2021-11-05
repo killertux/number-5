@@ -1,17 +1,15 @@
-use rocket_contrib::json::Json;
-use serde::Serialize;
 use rand::seq::SliceRandom;
+use serde::Serialize;
 
 #[derive(Serialize)]
 pub struct Phrase {
     message: String,
 }
 
-#[catch(404)]
-pub fn get_phrase() -> Json<Phrase> {
-    Json(Phrase {
+pub async fn get_phrase() -> Result<impl warp::Reply, std::convert::Infallible> {
+    Ok(warp::reply::json(&Phrase {
         message: get_random_phrase(),
-    })
+    }))
 }
 
 fn get_random_phrase() -> String {
@@ -96,7 +94,8 @@ fn get_random_phrase() -> String {
         "Well, above average.",
     ];
 
-    phrases.choose(&mut rand::thread_rng())
+    phrases
+        .choose(&mut rand::thread_rng())
         .unwrap_or(&"Ops!")
         .to_string()
 }

@@ -1,42 +1,42 @@
-use rocket_contrib::json::Json;
+use serde::{Deserialize, Serialize};
 use std::env;
 use std::time::{SystemTime, UNIX_EPOCH};
-use serde::{Deserialize, Serialize};
 
-const OPEN_WEATHER_ENDPOINT: &str  = "https://api.openweathermap.org/data/2.5/weather";
+const OPEN_WEATHER_ENDPOINT: &str = "https://api.openweathermap.org/data/2.5/weather";
 const CURITIBA_ID: u32 = 6322752;
 
 #[derive(Serialize, Debug)]
 pub enum WeatherResponse {
-    IsItRaining {
-        response: bool,
-        timestamp: u32,
-    },
-    Error {
-        message: &'static str
-    },
+    IsItRaining { response: bool, timestamp: u32 },
+    Error { message: &'static str },
 }
 
-#[get("/is-it-raining")]
-pub fn is_it_raining() -> Json<WeatherResponse> {
+pub async fn is_it_raining() -> Result<impl warp::Reply, std::convert::Infallible> {
     let url_request = create_request();
 
     let response = execute_request(url_request)
-                    .map(code_to_raining_state)
-                    .unwrap_or(WeatherResponse::Error{message:"Open Weather is out of service!"});
+        .await
+        .map(code_to_raining_state)
+        .unwrap_or(WeatherResponse::Error {
+            message: "Open Weather is out of service!",
+        });
 
-    Json(response)
+    Ok(warp::reply::json(&response))
 }
 
 fn create_request() -> String {
-    let appkey = env::var("APPKEY")
-                    .unwrap_or("put_key_here".to_string());
+    let appkey = env::var("APPKEY").unwrap_or("put_key_here".to_string());
 
-    format!("{}?id={}&appid={}", OPEN_WEATHER_ENDPOINT, CURITIBA_ID, appkey)
+    format!(
+        "{}?id={}&appid={}",
+        OPEN_WEATHER_ENDPOINT, CURITIBA_ID, appkey
+    )
 }
 
-fn execute_request(url_request: String) -> Result<OpenWeatherResponse, Box<std::error::Error>> {
-    let resp: OpenWeatherResponse = reqwest::get(url_request.as_str())?.json()?;
+async fn execute_request(
+    url_request: String,
+) -> Result<OpenWeatherResponse, Box<dyn std::error::Error>> {
+    let resp: OpenWeatherResponse = reqwest::get(url_request.as_str()).await?.json().await?;
     Ok(resp)
 }
 
@@ -45,18 +45,18 @@ fn code_to_raining_state(open_weather_response: OpenWeatherResponse) -> WeatherR
     WeatherResponse::IsItRaining {
         timestamp: get_timestamp(),
         response: match open_weather_response.weather[0].id {
-            230 ... 531 => true,
+            230..=531 => true,
             _ => false,
-        }
+        },
     }
 }
 
 fn get_timestamp() -> u32 {
-    SystemTime::now().duration_since(UNIX_EPOCH)
+    SystemTime::now()
+        .duration_since(UNIX_EPOCH)
         .expect("Something very wrong happend!")
         .as_secs() as u32
 }
-
 
 #[derive(Deserialize, Debug)]
 struct OpenWeatherResponse {
@@ -71,7 +71,7 @@ struct OpenWeatherResponse {
     sys: Sys,
     id: i32,
     name: String,
-    cod: i32
+    cod: i32,
 }
 
 #[derive(Deserialize, Debug)]
